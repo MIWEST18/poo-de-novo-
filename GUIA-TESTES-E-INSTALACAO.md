@@ -36,7 +36,7 @@ Este projeto conserva a estrutura Java 21, Swing/JFrame, NetBeans Ant, JDBC e My
 - [ ] Dados demonstrativos no banco e script SQL
 - [ ] Repetir os testes em um segundo computador
 
-Os itens acima **não estão marcados como concluídos**. A presença de código não comprova execução.
+**Teste automatizado concluído:** o workflow de integração confirmou compilação Java 21, criação do banco MySQL, carga dos dados, operações C/R/U/D em Usuário, Funcionário, Retirante, Objeto e Reivindicação e retorno legível do JOIN. Consulte o GitHub Actions para o resultado. **Os testes visuais da interface e a execução no computador do professor permanecem pendentes.**
 
 ## Mudanças iniciais da branch `guimaraes`
 
@@ -47,6 +47,17 @@ Os itens acima **não estão marcados como concluídos**. A presença de código
 
 ## Limitações
 
-A compilação e os testes com MySQL/NetBeans **ainda não foram executados** nesta revisão. Não trate esta branch como entrega final até executar os testes de aceitação acima. Esta branch foi copiada de `ludy-d3v/sistema-achados-perdidos` no ponto de partida de `guimaraes`, não necessariamente do último commit de `ludmilla`.
+**A compilação Java 21 e os testes JDBC com MySQL passaram no GitHub Actions**, mas a interface Swing ainda não foi testada manualmente no NetBeans. Não trate esta branch como entrega final até executar os testes de aceitação acima. Esta branch foi copiada de `ludy-d3v/sistema-achados-perdidos` no ponto de partida de `guimaraes`, não necessariamente do último commit de `ludmilla`.
 
-As imagens de `src/ICON/` devem ser comparadas com o repositório original: a importação pode não estar completa.
+As 12 imagens originais de `src/ICON/` foram preservadas na branch. O workflow de compilação verifica a presença dos recursos mais importantes.
+
+## Como abrir as novas funcionalidades
+
+Entre com uma das contas de demonstração, por exemplo `admin.sistema@p.ucb.br` (senha de **login** `123`). Nas telas de gerenciamento, use o menu superior **Cadastros (atividade POO) > Gerenciar usuarios, retirantes e reivindicacoes**. A aba Usuários aparece apenas para administradores. A senha da conexão com o MySQL permanece **em branco por padrão**, distinta da senha de login.
+
+## Evidências de execução automatizada
+
+- [Compilação Java 21 aprovada](https://github.com/MIWEST18/poo-de-novo-/actions/runs/41922103912)
+- [MySQL real + testes dos 5 CRUDs + JOIN aprovados](https://github.com/MIWEST18/poo-de-novo-/actions/runs/41922449317)
+
+As telas originais continuam presentes. A nova interface complementar não substitui os formulários `.form` do NetBeans.
