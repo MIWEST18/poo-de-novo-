@@ -75,6 +75,22 @@ private void carregarReivindicacoes() {
         initComponents();
         jLabel6.setText(SessaoUsuario.getIdentificacao());
         carregarReivindicacoes();
+        // Menu adicional de CRUDs exigidos na atividade, sem alterar o formulario NetBeans.
+        javax.swing.JMenuBar barraCadastros = new javax.swing.JMenuBar();
+        javax.swing.JMenu menuCadastros = new javax.swing.JMenu("Cadastros (atividade POO)");
+        javax.swing.JMenuItem abrirCadastros = new javax.swing.JMenuItem("Gerenciar usuarios, retirantes e reivindicacoes");
+        abrirCadastros.addActionListener(e -> {
+            try {
+                TelaCadastrosAcademicos tela = new TelaCadastrosAcademicos();
+                tela.setVisible(true);
+            } catch (SecurityException ex) {
+                javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        });
+        menuCadastros.add(abrirCadastros);
+        barraCadastros.add(menuCadastros);
+        setJMenuBar(barraCadastros);
+
         // o botão "Consultar objetos" não tinha evento no designer
         jBconsultarOB.addActionListener(evt -> {
             ConsultarObjeto tela = new ConsultarObjeto();
