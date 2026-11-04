@@ -1,0 +1,33 @@
+name: Compilacao Java 21
+
+on:
+  push:
+    branches: [guimaraes]
+  workflow_dispatch:
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Obter biblioteca de layout usada pelo NetBeans
+        run: |
+          mkdir -p lib build/classes
+          curl -fL --retry 3 -o lib/AbsoluteLayout.jar \
+            https://repo.maven.apache.org/maven2/org/netbeans/external/AbsoluteLayout/RELEASE290/AbsoluteLayout-RELEASE290.jar
+      - name: Compilar codigo Java (sem banco de dados)
+        run: |
+          find src -name '*.java' -print > sources.txt
+          javac -encoding UTF-8 -source 21 -target 21 -cp lib/AbsoluteLayout.jar -d build/classes @sources.txt
+      - name: Confirmar integridade dos arquivos de imagem
+        run: |
+          test -f 'src/ICON/Background (4).png'
+          test -f 'src/ICON/Emblema Branco sobre Azul Real (1).png'
+          test -f 'src/ICON/Logo da Universidade Católica de Brasília.png'
+          test -f 'src/ICON/Universidade Católica de Brasília ao Entardecer.png'
