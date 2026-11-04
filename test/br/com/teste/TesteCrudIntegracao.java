@@ -1,6 +1,8 @@
 package br.com.teste;
 
 import br.com.controller.CadastroAcademicoController;
+import br.com.controller.PeriodoRelatorio;
+import br.com.controller.ReivindicacaoController;
 import br.com.entidade.FuncionarioEntity;
 import br.com.entidade.ObjetoEntity;
 import java.sql.*;
@@ -98,6 +100,11 @@ public final class TesteCrudIntegracao {
                 "C: reivindicacao");
         int reivindicacao = idReivindicacao(retirante, objeto);
         exigir(reivindicacao > 0, "R: reivindicacao");
+        PeriodoRelatorio periodo = new PeriodoRelatorio();
+        periodo.setTodoPeriodo(true);
+        exigir(new ReivindicacaoController().contarReivindicacoesRelatorio(periodo, "Pendente") > 0,
+                "Relatorio principal de reivindicacoes por status");
+
         exigir(c.alterarReivindicacao(reivindicacao, "Recusada", "Conferido"),
                 "U: reivindicacao");
         exigir(c.excluirReivindicacao(reivindicacao), "D: reivindicacao");
