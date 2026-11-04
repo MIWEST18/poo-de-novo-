@@ -1,0 +1,41 @@
+name: Testes de integracao MySQL
+
+on:
+  push:
+    branches: [guimaraes]
+  workflow_dispatch:
+
+jobs:
+  integracao:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: teste_ci
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping -h localhost -uroot -pteste_ci" --health-interval=10s --health-retries=15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Dependencias e compilacao
+        run: |
+          mkdir -p lib build/classes
+          curl -fL -o lib/AbsoluteLayout.jar https://repo.maven.apache.org/maven2/org/netbeans/external/AbsoluteLayout/RELEASE290/AbsoluteLayout-RELEASE290.jar
+          curl -fL -o lib/mysql-connector-j-8.0.33.jar https://repo.maven.apache.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar
+          find src test -name '*.java' > sources.txt
+          javac -encoding UTF-8 --release 21 -cp "lib/AbsoluteLayout.jar:lib/mysql-connector-j-8.0.33.jar" -d build/classes @sources.txt
+      - name: Preparar banco de testes
+        env:
+          MYSQL_CONTAINER: ${{ job.services.mysql.id }}
+        run: |
+          docker exec -i "$MYSQL_CONTAINER" mysql -uroot -pteste_ci < database/banco.sql
+          docker exec -i "$MYSQL_CONTAINER" mysql -uroot -pteste_ci < database/inserts.sql
+      - name: Rodar testes CRUD
+        env:
+          DB_PASSWORD: teste_ci
+        run: java -cp "build/classes:lib/AbsoluteLayout.jar:lib/mysql-connector-j-8.0.33.jar" br.com.teste.TesteCrudIntegracao
