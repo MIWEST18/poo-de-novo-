@@ -612,7 +612,7 @@ public class TelaDevolucoes extends javax.swing.JFrame {
         );
 
         if (cadastrou) {
-            new br.com.controller.ObjetoController().atualizarStatusObjeto(d.getIdbj(), "Devolvido");
+            // O status do objeto ja foi atualizado na transacao de devolucao.
 
             JOptionPane.showMessageDialog(
                     this,
