@@ -110,39 +110,47 @@ public class DAODevolucoes extends DAO{
     }
 }
    
-     public boolean cadastrarDevolucao(int idObjeto, int idRetirante, int idUsuario, int idReivindicacao, LocalDate dataDevolucao, String assinaturaDigital) throws SQLException {
-
-    DAO dao = new DAO();
-
-    try {
-        dao.abrirBanco();
-
-        String sql = "INSERT INTO Devolucao "
-                + "(ID_Objeto, ID_Retirante, ID_Usuario, ID_Reivindicacao, "
-                + "Data_Devolucao, Assinatura_Digital) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-
-        dao.pst = dao.con.prepareStatement(sql);
-
-        dao.pst.setInt(1, idObjeto);
-        dao.pst.setInt(2, idRetirante);
-        dao.pst.setInt(3, idUsuario);
-        dao.pst.setInt(4, idReivindicacao);
-        dao.pst.setDate(5, Date.valueOf(dataDevolucao));
-        dao.pst.setString(6, assinaturaDigital);
-
-        return dao.pst.executeUpdate() > 0;
-
-    } finally {
-        try {
-            dao.fecharBanco();
-        } catch (Exception e) {
-            System.out.println(
-                    "Erro ao fechar recursos: " + e.getMessage()
-            );
-        }
-    }
-}
+     public boolean cadastrarDevolucao(int idObjeto, int idRetirante, int idUsuario,
+           int idReivindicacao, LocalDate dataDevolucao, String assinaturaDigital) throws SQLException {
+       DAO dao = new DAO();
+       try {
+           dao.abrirBanco();
+           dao.con.setAutoCommit(false);
+           try {
+               String sql = "INSERT INTO Devolucao "
+                       + "(ID_Objeto, ID_Retirante, ID_Usuario, ID_Reivindicacao, "
+                       + "Data_Devolucao, Assinatura_Digital) VALUES (?, ?, ?, ?, ?, ?)";
+               dao.pst = dao.con.prepareStatement(sql);
+               dao.pst.setInt(1, idObjeto);
+               dao.pst.setInt(2, idRetirante);
+               dao.pst.setInt(3, idUsuario);
+               dao.pst.setInt(4, idReivindicacao);
+               dao.pst.setDate(5, Date.valueOf(dataDevolucao));
+               dao.pst.setString(6, assinaturaDigital);
+               if (dao.pst.executeUpdate() != 1) {
+                   dao.con.rollback();
+                   return false;
+               }
+               dao.pst.close();
+               dao.pst = dao.con.prepareStatement(
+                       "UPDATE Objeto SET Status_Atual = ? WHERE ID_Objeto = ?");
+               dao.pst.setString(1, "Devolvido");
+               dao.pst.setInt(2, idObjeto);
+               if (dao.pst.executeUpdate() != 1) {
+                   dao.con.rollback();
+                   return false;
+               }
+               dao.con.commit();
+               return true;
+           } catch (SQLException | RuntimeException e) {
+               try { dao.con.rollback(); }
+               catch (SQLException rollbackError) { e.addSuppressed(rollbackError); }
+               throw e;
+           }
+       } finally {
+           dao.fecharBanco();
+       }
+   }
 
 public int contarDevolucoesPorRetirante(int idRetirante) throws SQLException {
     DAO dao = new DAO();
