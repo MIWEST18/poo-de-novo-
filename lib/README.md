@@ -1,0 +1,1 @@
+Coloque aqui o arquivo oficial `mysql-connector-j-8.0.33.jar` para compilar/executar este projeto no NetBeans. O JAR não foi incluído no GitHub. Se a versão for diferente, ajuste o nome do arquivo na configuração `nbproject/project.properties`. A biblioteca gráfica `Absolute Layout` também deve estar disponível no NetBeans.

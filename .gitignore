@@ -1,3 +1,10 @@
+# Artefatos locais do Java/NetBeans
 build/
+dist/
 nbproject/private/
-src/br/com/entidade/DAO.java
+*.class
+# Dependencias externas devem ser instaladas localmente
+lib/*.jar
+# Segredos locais
+.env
+.env.*
